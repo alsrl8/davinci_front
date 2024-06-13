@@ -1,31 +1,54 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react';
 
-const socket = new WebSocket('ws://localhost:8080/ws'); // 서버 주소에 맞게 변경
+type User = {
+    name: string,
+}
 
-const Chat = () => {
+type ChatObject = {
+    messageType: number,
+    user: User,
+    message: string,
+    time: string,
+}
+
+const Chat: React.FC = () => {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState<string[]>([]);
+    const [socket, setSocket] = useState<WebSocket | null>(null);
 
     useEffect(() => {
-        socket.onmessage = (event) => {
-            setMessages((prevMessages) => [...prevMessages, event.data]);
-        };
+        const newSocket = new WebSocket('wss://chat-dot-davinci-song.appspot.com/ws');
+        setSocket(newSocket);
 
-        socket.onopen = () => {
+        newSocket.onopen = () => {
             console.log('WebSocket connection established');
         };
 
-        socket.onclose = () => {
+        newSocket.onmessage = (event) => {
+            try{
+                const chatData: ChatObject = JSON.parse(event.data);
+                setMessages((prevMessages) => [...prevMessages, chatData.message]);
+            } catch (error) {
+                console.log("Failed to parse the incoming data. Error: ", error);
+            }
+        };
+
+        newSocket.onclose = () => {
             console.log('WebSocket connection closed');
         };
 
+        newSocket.onerror = (error) => {
+            console.log('WebSocket error:', error);
+            console.error('WebSocket Error: ', error);
+        };
+
         return () => {
-            socket.close();
+            newSocket.close();
         };
     }, []);
 
     const sendMessage = () => {
-        if (socket.readyState === WebSocket.OPEN) {
+        if (socket && socket.readyState === WebSocket.OPEN) {
             socket.send(message);
             setMessage('');
         } else {
@@ -44,11 +67,11 @@ const Chat = () => {
             <input
                 type="text"
                 value={message}
-                onChange={e => setMessage(e.target.value)}
+                onChange={(e) => setMessage(e.target.value)}
             />
             <button onClick={sendMessage}>Send</button>
         </div>
     );
-}
+};
 
 export default Chat;
