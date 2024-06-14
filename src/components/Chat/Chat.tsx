@@ -17,7 +17,13 @@ const Chat: React.FC = () => {
     const [socket, setSocket] = useState<WebSocket | null>(null);
 
     useEffect(() => {
-        const newSocket = new WebSocket('wss://chat-dot-davinci-song.appspot.com/ws');
+        const websocketUrl = process.env.REACT_APP_WEBSOCKET_URL;
+
+        if (!websocketUrl) {
+            throw new Error("REACT_APP_WEBSOCKET_URL environment variable is not set");
+        }
+
+        const newSocket = new WebSocket(websocketUrl);
         setSocket(newSocket);
 
         newSocket.onopen = () => {
@@ -25,10 +31,11 @@ const Chat: React.FC = () => {
         };
 
         newSocket.onmessage = (event) => {
-            try{
+            try {
                 const chatData: ChatObject = JSON.parse(event.data);
                 setMessages((prevMessages) => [...prevMessages, chatData.message]);
             } catch (error) {
+                setMessages((prevMessages) => [...prevMessages, event.data]);
                 console.log("Failed to parse the incoming data. Error: ", error);
             }
         };

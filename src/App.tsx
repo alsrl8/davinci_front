@@ -1,13 +1,15 @@
 import React from 'react';
 import './App.css';
-import Chat from "./Chat";
+import Chat from "./components/Chat/Chat";
+import {ThemeProvider} from "./contexts/ThemeContext";
+import Main from "./components/Main";
 
-function App() {
+const App = () => {
     return (
-        <div className="App">
-            <Chat/>
-        </div>
+        <ThemeProvider>
+            <Main/>
+        </ThemeProvider>
     );
-}
+};
 
 export default App;
