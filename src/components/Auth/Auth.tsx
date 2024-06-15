@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {signInWithEmailAndPassword} from 'firebase/auth';
 import auth from '../../config/firebaseConfig';
-import Cookies from "js-cookie";
 import {ChatObject} from "../../types/Chat";
 
 interface AuthProps {
@@ -20,7 +19,14 @@ const Auth = (props: AuthProps) => {
             const idToken = await userCredential.user.getIdToken();
             const refreshToken = userCredential.user.refreshToken;
 
-            const response = await fetch('http://localhost:8080/login', {
+            const chatServerUrl = process.env.REACT_APP_CHAT_SERVER_URL;
+            const urlScheme = process.env.REACT_APP_ENV === "production" ? "https" : "http";
+            if (!chatServerUrl) {
+                throw new Error("REACT_APP_CHAT_SERVER_URL environment variable is not set");
+            }
+
+            const chatLoginUrl = `${urlScheme}://${chatServerUrl}/login`
+            const response = await fetch(chatLoginUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -45,13 +51,14 @@ const Auth = (props: AuthProps) => {
     };
 
     const connectWebSocket = async (idToken: string) => {
-        const websocketUrl = process.env.REACT_APP_WEBSOCKET_URL;
-
-        if (!websocketUrl) {
-            throw new Error("REACT_APP_WEBSOCKET_URL or REACT_APP_WEBSOCKET_OPTION_URL environment variable is not set");
+        const chatServerUrl = process.env.REACT_APP_CHAT_SERVER_URL;
+        const urlScheme = process.env.REACT_APP_ENV === "production" ? "wss" : "ws";
+        if (!chatServerUrl) {
+            throw new Error("REACT_APP_CHAT_SERVER_URL environment variable is not set");
         }
 
-        const newSocket = new WebSocket(websocketUrl);
+        const chatWsUrl = `${urlScheme}://${chatServerUrl}/ws`
+        const newSocket = new WebSocket(chatWsUrl);
         newSocket.onopen = () => {
             props.setSocket(newSocket);
             console.log('WebSocket connection established');

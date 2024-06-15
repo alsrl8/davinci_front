@@ -1,0 +1,39 @@
+on:
+  push:
+    branches: [main, deploy]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.11.0
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build project
+        run: npm run build
+        env:
+          REACT_APP_CHAT_SERVER_URL: 'chat-dot-davinci-song.com'
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_CREDENTIALS_ROLE }}
+          aws-region: "us-east-1"
+
+      - name: Deploy to S3
+        run: aws s3 sync ./build ${{ secrets.AWS_S3_BUCKET }}
+
+      - name: Invalidate CloudFront Cache
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
