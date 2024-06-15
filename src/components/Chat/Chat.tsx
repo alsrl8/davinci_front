@@ -1,62 +1,18 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 
-type User = {
-    name: string,
+
+interface ChatProps {
+    socket: WebSocket | null;
+    messages: string[]
 }
 
-type ChatObject = {
-    messageType: number,
-    user: User,
-    message: string,
-    time: string,
-}
-
-const Chat: React.FC = () => {
+const Chat = (props: ChatProps) => {
     const [message, setMessage] = useState('');
-    const [messages, setMessages] = useState<string[]>([]);
-    const [socket, setSocket] = useState<WebSocket | null>(null);
 
-    useEffect(() => {
-        const websocketUrl = process.env.REACT_APP_WEBSOCKET_URL;
-
-        if (!websocketUrl) {
-            throw new Error("REACT_APP_WEBSOCKET_URL environment variable is not set");
-        }
-
-        const newSocket = new WebSocket(websocketUrl);
-        setSocket(newSocket);
-
-        newSocket.onopen = () => {
-            console.log('WebSocket connection established');
-        };
-
-        newSocket.onmessage = (event) => {
-            try {
-                const chatData: ChatObject = JSON.parse(event.data);
-                setMessages((prevMessages) => [...prevMessages, chatData.message]);
-            } catch (error) {
-                setMessages((prevMessages) => [...prevMessages, event.data]);
-                console.log("Failed to parse the incoming data. Error: ", error);
-            }
-        };
-
-        newSocket.onclose = () => {
-            console.log('WebSocket connection closed');
-        };
-
-        newSocket.onerror = (error) => {
-            console.log('WebSocket error:', error);
-            console.error('WebSocket Error: ', error);
-        };
-
-        return () => {
-            newSocket.close();
-        };
-    }, []);
 
     const sendMessage = () => {
-        if (socket && socket.readyState === WebSocket.OPEN) {
-            socket.send(message);
+        if (props.socket && props.socket.readyState === WebSocket.OPEN) {
+            props.socket.send(message);
             setMessage('');
         } else {
             console.log('WebSocket is not open');
@@ -67,7 +23,7 @@ const Chat: React.FC = () => {
         <div>
             <h1>Chat</h1>
             <div>
-                {messages.map((msg, index) => (
+                {props.messages.map((msg, index) => (
                     <div key={index}>{msg}</div>
                 ))}
             </div>
