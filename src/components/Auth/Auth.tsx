@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {signInWithEmailAndPassword} from 'firebase/auth';
 import auth from '../../config/firebaseConfig';
 import {ChatObject} from "../../types/Chat";
-import Cookies from 'js-cookie';
 
 interface AuthProps {
     setSocket: React.Dispatch<React.SetStateAction<WebSocket | null>>;
@@ -15,8 +14,19 @@ const Auth = (props: AuthProps) => {
     const [password, setPassword] = useState('');
 
     useEffect(() => {
-        const sessionData = sessionStorage.getItem('session');
-        console.log('sessionData: ', sessionData)
+        const sessionString = sessionStorage.getItem('session');
+        console.log('sessionString:', sessionString);
+        if (sessionString) {
+            try {
+                type SessionObj = { idToken: string };
+                const sessionObj: SessionObj = JSON.parse(sessionString);
+                if (sessionObj.idToken) {
+                    connectWebSocket(sessionObj.idToken);
+                }
+            } catch (error) {
+                console.error('Failed to parse session data:', error);
+            }
+        }
     }, []);
 
     const handleLogin = async () => {
@@ -58,7 +68,7 @@ const Auth = (props: AuthProps) => {
                     }, {} as Cookies);
                     sessionStorage.setItem('session', JSON.stringify(cookies));
                 }
-                await connectWebSocket();
+                await connectWebSocket(idToken);
             } else {
                 console.error('Server login failed:', response.statusText);
             }
@@ -68,7 +78,7 @@ const Auth = (props: AuthProps) => {
         }
     };
 
-    const connectWebSocket = async () => {
+    const connectWebSocket = async (idToken: string) => {
         const chatServerUrl = process.env.REACT_APP_CHAT_SERVER_URL;
         const urlScheme = process.env.REACT_APP_ENV === "production" ? "wss" : "ws";
         if (!chatServerUrl) {
