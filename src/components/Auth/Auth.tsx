@@ -58,7 +58,9 @@ const Auth = (props: AuthProps) => {
                 console.log('Server login successful');
 
                 type Cookies = { [key: string]: string };
-                const cookieString = response.headers.get('set-cookie');
+                const cookieString = response.headers.get('Set-Cookie');
+
+                console.log("response.headers: ", response.headers)
 
                 if (cookieString) {
                     const cookies: Cookies = cookieString.split(';').reduce((acc, cookie) => {
@@ -67,6 +69,8 @@ const Auth = (props: AuthProps) => {
                         return acc;
                     }, {} as Cookies);
                     sessionStorage.setItem('session', JSON.stringify(cookies));
+                } else {
+                    console.log("no Set-Cookie from response header.")
                 }
                 await connectWebSocket(idToken);
             } else {
