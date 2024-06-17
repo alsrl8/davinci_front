@@ -15,8 +15,8 @@ const Auth = (props: AuthProps) => {
     const [password, setPassword] = useState('');
 
     useEffect(() => {
-        const sessionCookie = Cookies.get('session');
-        console.log('sessionCookie: ', sessionCookie)
+        const sessionData = sessionStorage.getItem('session');
+        console.log('sessionData: ', sessionData)
     }, []);
 
     const handleLogin = async () => {
@@ -46,7 +46,18 @@ const Auth = (props: AuthProps) => {
 
             if (response.ok) {
                 console.log('Server login successful');
-                Cookies.set('session', 'true', {expires: 1});
+
+                type Cookies = { [key: string]: string };
+                const cookieString = response.headers.get('set-cookie');
+
+                if (cookieString) {
+                    const cookies: Cookies = cookieString.split(';').reduce((acc, cookie) => {
+                        const [name, ...rest] = cookie.split('=');
+                        acc[name.trim()] = rest.join('=').trim();
+                        return acc;
+                    }, {} as Cookies);
+                    sessionStorage.setItem('session', JSON.stringify(cookies));
+                }
                 await connectWebSocket();
             } else {
                 console.error('Server login failed:', response.statusText);
