@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
   deploy:
@@ -23,7 +23,9 @@ jobs:
         run: yarn install
 
       - name: Build project
-        run: npm run build
+        run: |
+          unset CI
+          npm run build
         env:
           REACT_APP_CHAT_SERVER_URL: 'chat-dot-davinci-song.du.r.appspot.com'
           REACT_APP_ENV: 'production'
