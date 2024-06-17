@@ -1,7 +1,8 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {signInWithEmailAndPassword} from 'firebase/auth';
 import auth from '../../config/firebaseConfig';
 import {ChatObject} from "../../types/Chat";
+import Cookies from 'js-cookie';
 
 interface AuthProps {
     setSocket: React.Dispatch<React.SetStateAction<WebSocket | null>>;
@@ -13,18 +14,23 @@ const Auth = (props: AuthProps) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    useEffect(() => {
+        const sessionCookie = Cookies.get('session');
+        console.log('sessionCookie: ', sessionCookie)
+    }, []);
+
     const handleLogin = async () => {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const idToken = await userCredential.user.getIdToken();
+        const refreshToken = userCredential.user.refreshToken;
+
+        const chatServerUrl = process.env.REACT_APP_CHAT_SERVER_URL;
+        const urlScheme = process.env.REACT_APP_ENV === "production" ? "https" : "http";
+        if (!chatServerUrl) {
+            throw new Error("REACT_APP_CHAT_SERVER_URL environment variable is not set");
+        }
+
         try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const idToken = await userCredential.user.getIdToken();
-            const refreshToken = userCredential.user.refreshToken;
-
-            const chatServerUrl = process.env.REACT_APP_CHAT_SERVER_URL;
-            const urlScheme = process.env.REACT_APP_ENV === "production" ? "https" : "http";
-            if (!chatServerUrl) {
-                throw new Error("REACT_APP_CHAT_SERVER_URL environment variable is not set");
-            }
-
             const chatLoginUrl = `${urlScheme}://${chatServerUrl}/login`
             const response = await fetch(chatLoginUrl, {
                 method: 'POST',
@@ -40,7 +46,8 @@ const Auth = (props: AuthProps) => {
 
             if (response.ok) {
                 console.log('Server login successful');
-                await connectWebSocket(idToken);
+                Cookies.set('session', 'true', {expires: 1});
+                await connectWebSocket();
             } else {
                 console.error('Server login failed:', response.statusText);
             }
@@ -50,7 +57,7 @@ const Auth = (props: AuthProps) => {
         }
     };
 
-    const connectWebSocket = async (idToken: string) => {
+    const connectWebSocket = async () => {
         const chatServerUrl = process.env.REACT_APP_CHAT_SERVER_URL;
         const urlScheme = process.env.REACT_APP_ENV === "production" ? "wss" : "ws";
         if (!chatServerUrl) {

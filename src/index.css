@@ -21,3 +21,7 @@ body.dark-mode {
     background-color: black;
     color: white;
 }
+
+* {
+    transition: background-color 0.3s ease-in-out;
+}
