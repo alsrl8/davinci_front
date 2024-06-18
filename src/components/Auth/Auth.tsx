@@ -14,14 +14,11 @@ const Auth = (props: AuthProps) => {
     const [password, setPassword] = useState('');
 
     useEffect(() => {
-        const sessionString = sessionStorage.getItem('session');
-        console.log('sessionString:', sessionString);
-        if (sessionString) {
+        const idToken = sessionStorage.getItem('X-Id-Token');
+        if (idToken) {
             try {
-                type SessionObj = { idToken: string };
-                const sessionObj: SessionObj = JSON.parse(sessionString);
-                if (sessionObj.idToken) {
-                    connectWebSocket(sessionObj.idToken);
+                if (idToken) {
+                    connectWebSocket(idToken);
                 }
             } catch (error) {
                 console.error('Failed to parse session data:', error);
@@ -57,22 +54,14 @@ const Auth = (props: AuthProps) => {
             if (response.ok) {
                 console.log('Server login successful');
 
-                type Cookies = { [key: string]: string };
-                const cookieString = response.headers.get('Set-Cookie');
+                const idToken = response.headers.get('X-Id-Token');
 
-                console.log("response.headers: ", response.headers)
-
-                if (cookieString) {
-                    const cookies: Cookies = cookieString.split(';').reduce((acc, cookie) => {
-                        const [name, ...rest] = cookie.split('=');
-                        acc[name.trim()] = rest.join('=').trim();
-                        return acc;
-                    }, {} as Cookies);
-                    sessionStorage.setItem('session', JSON.stringify(cookies));
+                if (idToken) {
+                    sessionStorage.setItem('X-Id-Token', idToken);
+                    await connectWebSocket(idToken);
                 } else {
-                    console.log("no Set-Cookie from response header.")
+                    console.log("X-Id-Token doesn't exist on response header.")
                 }
-                await connectWebSocket(idToken);
             } else {
                 console.error('Server login failed:', response.statusText);
             }
