@@ -7,6 +7,10 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+body, button, input, textarea, select {
+    font-family: "bm_jua", sans-serif;
+}
+
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
@@ -24,4 +28,11 @@ body.dark-mode {
 
 * {
     transition: background-color 0.3s ease-in-out;
+}
+
+@font-face {
+    font-family: 'bm_jua';
+    src: url('./fonts/bm_jua.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
 }

@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import './Chat.css';
 
 
 interface ChatProps {
@@ -20,7 +21,7 @@ const Chat = (props: ChatProps) => {
     };
 
     return (
-        <div>
+        <div className="chat-container">
             <h1>Chat</h1>
             <div>
                 {props.messages.map((msg, index) => (
@@ -28,6 +29,7 @@ const Chat = (props: ChatProps) => {
                 ))}
             </div>
             <input
+                className="chat-input"
                 type="text"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
