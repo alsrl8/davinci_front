@@ -1,0 +1,17 @@
+.user-info {
+    width: 150px;
+    box-sizing: border-box;
+    background-color: grey;
+    border: none;
+    padding: 1px 1px;
+    font-size: 20px;
+    text-align: center;
+    align-items: center;
+    border-radius: 8px;
+}
+
+
+.user-info .ant-card-body {
+    padding: 0;
+
+}

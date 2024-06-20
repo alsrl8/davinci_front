@@ -5,6 +5,7 @@ import DarkModeSwitch from "./DrakModeSwitch/DarkModeSwitch";
 import Chat from "./Chat/Chat";
 import Auth from "./Auth/Auth";
 import "./Main.css";
+import UserInfo from "./UserInfo/UserInfo";
 
 
 const Main = () => {
@@ -20,6 +21,7 @@ const Main = () => {
         <div className="main-container">
             <div className="auth-container">
                 <Auth setSocket={setSocket} setMessages={setMessages}/>
+                <UserInfo username={""} email={""} />
             </div>
             <div className="chat-container">
                 <Chat socket={socket} messages={messages}/>
