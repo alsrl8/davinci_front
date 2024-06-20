@@ -22,19 +22,21 @@ const Chat = (props: ChatProps) => {
 
     return (
         <div className="chat-container">
-            <h1>Chat</h1>
-            <div>
+            <h1 className="title">Chat</h1>
+            <div className="messages-container">
                 {props.messages.map((msg, index) => (
                     <div key={index}>{msg}</div>
                 ))}
             </div>
-            <input
-                className="chat-input"
-                type="text"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-            />
-            <button onClick={sendMessage}>Send</button>
+            <div className="input-container">
+                <input
+                    className="chat-input"
+                    type="text"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                />
+                <button className="button" onClick={sendMessage}>Send</button>
+            </div>
         </div>
     );
 };

@@ -6,12 +6,12 @@ import RedirectToHTTPS from "./components/RedirectToHTTPS";
 
 const App = () => {
     return (
-        <>
+        <div className="App-container">
             <RedirectToHTTPS/>
             <ThemeProvider>
                 <Main/>
             </ThemeProvider>
-        </>
+        </div>
     );
 };
 

@@ -1,8 +1,42 @@
 .chat-container {
-    margin-left: 10px;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    box-sizing: border-box;
+
+    .title {
+        font-size: 50px;
+    }
+}
+
+.messages-container {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    font-size: 30px;
+}
+
+.message {
+    margin-bottom: 5px;
+}
+
+.input-container {
+    position: fixed;
+    bottom: 30px;
+    display: flex;
+    flex-direction: row;
+    width: 97%;
 }
 
 .chat-input {
-    padding: 0.5em;
-    font-size: 1.2em;
+    flex: 1;
+    padding: 10px;
+    margin-right: 10px;
+    box-sizing: border-box;
+    font-size: 30px;
+}
+
+.input-container .button {
+    padding: 10px;
+    font-size: 30px;
 }

@@ -4,6 +4,7 @@ import {useTheme} from "../contexts/ThemeContext";
 import DarkModeSwitch from "./DrakModeSwitch/DarkModeSwitch";
 import Chat from "./Chat/Chat";
 import Auth from "./Auth/Auth";
+import "./Main.css";
 
 
 const Main = () => {
@@ -16,9 +17,13 @@ const Main = () => {
     }, [isDarkMode]);
 
     return (
-        <div>
-            <Auth setSocket={setSocket} setMessages={setMessages}/>
-            <Chat socket={socket} messages={messages}/>
+        <div className="main-container">
+            <div className="auth-container">
+                <Auth setSocket={setSocket} setMessages={setMessages}/>
+            </div>
+            <div className="chat-container">
+                <Chat socket={socket} messages={messages}/>
+            </div>
             <DarkModeSwitch toggleTheme={toggleTheme}/>
         </div>
     );
