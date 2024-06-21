@@ -10,7 +10,7 @@ interface UserInfoProps {
 const UserInfo = (props: UserInfoProps) => {
     return (
         <div className="user-info">
-            <p>Username</p>
+            <p>{props.username}</p>
         </div>
     )
 };

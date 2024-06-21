@@ -1,11 +1,18 @@
 import React, {useEffect, useState} from 'react';
-import {signInWithEmailAndPassword} from 'firebase/auth';
+import {signInWithEmailAndPassword, UserCredential} from 'firebase/auth';
 import auth from '../../config/firebaseConfig';
 import {ChatObject} from "../../types/Chat";
+
+
+interface UserInfoInterface {
+    name: string;
+    email: string;
+}
 
 interface AuthProps {
     setSocket: React.Dispatch<React.SetStateAction<WebSocket | null>>;
     setMessages: React.Dispatch<React.SetStateAction<string[]>>;
+    setUserInfo: React.Dispatch<React.SetStateAction<UserInfoInterface | null>>
 }
 
 
@@ -18,7 +25,7 @@ const Auth = (props: AuthProps) => {
         if (idToken) {
             try {
                 if (idToken) {
-                    connectWebSocket(idToken);
+                    loginToChatServer(idToken, "");
                 }
             } catch (error) {
                 console.error('Failed to parse session data:', error);
@@ -26,11 +33,7 @@ const Auth = (props: AuthProps) => {
         }
     }, []);
 
-    const handleLogin = async () => {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const idToken = await userCredential.user.getIdToken();
-        const refreshToken = userCredential.user.refreshToken;
-
+    async function loginToChatServer(idToken: string, refreshToken: string) {
         const chatServerUrl = process.env.REACT_APP_CHAT_SERVER_URL;
         const urlScheme = process.env.REACT_APP_ENV === "production" ? "https" : "http";
         if (!chatServerUrl) {
@@ -58,7 +61,16 @@ const Auth = (props: AuthProps) => {
 
                 if (idToken) {
                     sessionStorage.setItem('X-Id-Token', idToken);
-                    await connectWebSocket(idToken);
+                    const body = await response.json()
+                    props.setUserInfo(
+                        (prev)=> {
+                            return {
+                                name: body.name,
+                                email: body.email,
+                            }
+                        }
+                    )
+                    await connectWebSocket();
                 } else {
                     console.log("X-Id-Token doesn't exist on response header.")
                 }
@@ -69,9 +81,16 @@ const Auth = (props: AuthProps) => {
         } catch (error) {
             console.error('Error logging in:', error);
         }
+    }
+
+    const handleLogin = async () => {
+        const userCredential: UserCredential = await signInWithEmailAndPassword(auth, email, password);
+        const idToken = await userCredential.user.getIdToken();
+        const refreshToken = userCredential.user.refreshToken;
+        await loginToChatServer(idToken, refreshToken);
     };
 
-    const connectWebSocket = async (idToken: string) => {
+    const connectWebSocket = async () => {
         const chatServerUrl = process.env.REACT_APP_CHAT_SERVER_URL;
         const urlScheme = process.env.REACT_APP_ENV === "production" ? "wss" : "ws";
         if (!chatServerUrl) {
