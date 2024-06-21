@@ -6,6 +6,7 @@ import Chat from "./Chat/Chat";
 import Auth from "./Auth/Auth";
 import "./Main.css";
 import UserInfo from "./UserInfo/UserInfo";
+import Config from "./Config/Config";
 
 interface UserInfoInterface {
     name: string;
@@ -33,7 +34,7 @@ const Main = () => {
             <div className="chat-container">
                 <Chat socket={socket} messages={messages}/>
             </div>
-            <DarkModeSwitch toggleTheme={toggleTheme}/>
+            <Config toggleTheme={toggleTheme}/>
         </div>
     );
 };
