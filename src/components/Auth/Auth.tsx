@@ -63,7 +63,7 @@ const Auth = (props: AuthProps) => {
                     sessionStorage.setItem('X-Id-Token', idToken);
                     const body = await response.json()
                     props.setUserInfo(
-                        (prev)=> {
+                        (prev) => {
                             return {
                                 name: body.name,
                                 email: body.email,
@@ -123,9 +123,15 @@ const Auth = (props: AuthProps) => {
 
     return (
         <div>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email"/>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
-                   placeholder="Password"/>
+            <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+            />
+            <input
+                type="password" value={password} onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"/>
             <button onClick={handleLogin}>Login</button>
         </div>
     );

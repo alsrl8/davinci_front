@@ -1,6 +1,6 @@
 body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    font-family: "ownglyph", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -8,7 +8,7 @@ body {
 }
 
 body, button, input, textarea, select {
-    font-family: "bm_jua", sans-serif;
+    font-family: "ownglyph", sans-serif;
 }
 
 code {
@@ -33,6 +33,13 @@ body.dark-mode {
 @font-face {
     font-family: 'bm_jua';
     src: url('./fonts/bm_jua.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ownglyph';
+    src: url('./fonts/온글잎 류뚱체.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
