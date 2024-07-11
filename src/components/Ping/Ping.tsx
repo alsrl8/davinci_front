@@ -11,7 +11,7 @@ const Ping = () => {
         }
 
         try {
-            const chatLoginUrl = `${urlScheme}://${chatServerUrl}/ping`
+            const chatLoginUrl = `${urlScheme}://${chatServerUrl}:8080/ping`
             const response = await fetch(chatLoginUrl);
 
             if (response.ok) {
