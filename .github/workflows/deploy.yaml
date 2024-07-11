@@ -27,7 +27,7 @@ jobs:
           unset CI
           npm run build
         env:
-          REACT_APP_CHAT_SERVER_URL: 'chat-dot-davinci-song.du.r.appspot.com'
+          REACT_APP_CHAT_SERVER_URL: 'ec2-3-35-136-167.ap-northeast-2.compute.amazonaws.com'
           REACT_APP_ENV: 'production'
 
       - name: Configure AWS credentials
