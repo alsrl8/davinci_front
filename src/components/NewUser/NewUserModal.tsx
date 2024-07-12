@@ -46,7 +46,6 @@ const NewUserModal = (props: NewUserModalProps) => {
             });
 
             if (response.ok) {
-                console.log('Add User')
                 clearUserInput();
                 props.setIsModalOpen(false);
             }
