@@ -50,6 +50,7 @@ const Auth = (props: AuthProps) => {
                         email: data.email,
                     }
                 })
+                await connectWebSocket();
             } else {
                 console.error('Server login failed:', response.statusText);
             }
@@ -79,7 +80,7 @@ const Auth = (props: AuthProps) => {
         newSocket.onmessage = (event) => {
             try {
                 const chatData: ChatObject = JSON.parse(event.data);
-                props.setMessages((prevMessages) => [...prevMessages, chatData.message]);
+                props.setMessages((prevMessages) => [...prevMessages, "[" + chatData.user + "] "+ chatData.message]);
             } catch (error) {
                 props.setMessages((prevMessages) => [...prevMessages, event.data]);
                 console.log("Failed to parse the incoming data. Error: ", error);
