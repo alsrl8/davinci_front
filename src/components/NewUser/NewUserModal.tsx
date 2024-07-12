@@ -48,6 +48,11 @@ const NewUserModal = (props: NewUserModalProps) => {
             if (response.ok) {
                 clearUserInput();
                 props.setIsModalOpen(false);
+            } else  {
+                const data = await response.json()
+                if (data.error !== undefined) {
+                    alert(data.error);
+                }
             }
         } catch (error) {
             console.error('Error adding new user:', error);
