@@ -10,7 +10,7 @@ interface ConfigProps {
 const Config = (props: ConfigProps) => {
     return (
         <div className="config-container">
-            <Ping />
+            {/*<Ping />*/}
             <NewUser />
             <DarkModeSwitch toggleTheme={props.toggleTheme}/>
         </div>

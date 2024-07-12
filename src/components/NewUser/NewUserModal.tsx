@@ -35,7 +35,7 @@ const NewUserModal = (props: NewUserModalProps) => {
                 },
                 credentials: 'include',
                 body: JSON.stringify({
-                    userEmail: userEmail
+                    userEmail: email,
                 })
             });
 
@@ -54,11 +54,11 @@ const NewUserModal = (props: NewUserModalProps) => {
         }
     }
 
-    const validateEmail = (email: string) => {
+    const validateEmail = async (email: string) => {
         if (!validateEmailFormat(email)) {
             setError('Invalid email format');
             setUserEmailConfirmed(false);
-        } else if (!isUniqueEmail(email)) {
+        } else if (!await isUniqueEmail(email)) {
             setError('');
             setUserEmailConfirmed(false);
         } else {
