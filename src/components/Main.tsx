@@ -1,17 +1,12 @@
 import React, {useEffect, useState} from 'react';
 
 import {useTheme} from "../contexts/ThemeContext";
-import DarkModeSwitch from "./DrakModeSwitch/DarkModeSwitch";
 import Chat from "./Chat/Chat";
-import Auth from "./Auth/Auth";
 import "./Main.css";
-import UserInfo from "./UserInfo/UserInfo";
 import Config from "./Config/Config";
+import {UserInfoInterface} from "./Interface/UserInfo";
+import {ChatObject} from "../types/Chat";
 
-interface UserInfoInterface {
-    name: string;
-    email: string;
-}
 
 const Main = () => {
     const {isDarkMode, toggleTheme} = useTheme();
@@ -23,18 +18,53 @@ const Main = () => {
         document.body.className = isDarkMode ? 'dark-mode' : 'light-mode';
     }, [isDarkMode]);
 
+    const connectWebSocket = async () => {
+        const chatServerUrl = process.env.REACT_APP_CHAT_SERVER_URL;
+        const urlScheme = process.env.REACT_APP_ENV === "production" ? "wss" : "ws";
+        if (!chatServerUrl) {
+            throw new Error("REACT_APP_CHAT_SERVER_URL environment variable is not set");
+        }
+
+        const chatWsUrl = `${urlScheme}://${chatServerUrl}/ws`
+        const newSocket = new WebSocket(chatWsUrl);
+        newSocket.onopen = () => {
+            setSocket(newSocket);
+            console.log('WebSocket connection established');
+        };
+        newSocket.onmessage = (event) => {
+            try {
+                const chatData: ChatObject = JSON.parse(event.data);
+                setMessages((prevMessages) => [...prevMessages, "[" + chatData.user + "] " + chatData.message]);
+            } catch (error) {
+                setMessages((prevMessages) => [...prevMessages, event.data]);
+                console.log("Failed to parse the incoming data. Error: ", error);
+            }
+        };
+        newSocket.onclose = () => {
+            console.log('WebSocket connection closed');
+        };
+        newSocket.onerror = (error) => {
+            console.log('WebSocket error:', error);
+            console.error('WebSocket Error: ', error);
+        };
+    }
+
     return (
         <div className="main-container">
-            <div className="auth-container">
-                {userInfo === null ?
-                    <Auth setSocket={setSocket} setMessages={setMessages} setUserInfo={setUserInfo}/> :
-                    <UserInfo username={userInfo.name} email={userInfo.email}/>
-                }
-            </div>
             <div className="chat-container">
-                <Chat socket={socket} messages={messages}/>
+                <Chat
+                    socket={socket}
+                    messages={messages}
+                />
             </div>
-            <Config toggleTheme={toggleTheme}/>
+            <Config
+                toggleTheme={toggleTheme}
+                userInfo={userInfo}
+                setSocket={setSocket}
+                setMessages={setMessages}
+                setUserInfo={setUserInfo}
+                connectWebSocket={connectWebSocket}
+            />
         </div>
     );
 };

@@ -1,17 +1,35 @@
 import "./Config.css"
 import DarkModeSwitch from "../DrakModeSwitch/DarkModeSwitch";
 import NewUser from "../NewUser/NewUser";
-import Ping from "../Ping/Ping";
+import {UserInfoInterface} from "../Interface/UserInfo";
+import Auth from "../Auth/Auth";
+import UserInfo from "../UserInfo/UserInfo";
+import React from "react";
+import SingIn from "../SignIn/SignIn";
+
 
 interface ConfigProps {
     toggleTheme: () => void;
+    userInfo: UserInfoInterface | null;
+    setSocket: React.Dispatch<React.SetStateAction<WebSocket | null>>;
+    setMessages: React.Dispatch<React.SetStateAction<string[]>>;
+    setUserInfo: React.Dispatch<React.SetStateAction<UserInfoInterface | null>>
+    connectWebSocket: () => void;
 }
+
 
 const Config = (props: ConfigProps) => {
     return (
         <div className="config-container">
             {/*<Ping />*/}
-            <NewUser />
+            {/*<div className="auth-container">*/}
+            {/*    {props.userInfo === null ?*/}
+            {/*        <Auth setSocket={props.setSocket} setMessages={props.setMessages} setUserInfo={props.setUserInfo}/> :*/}
+            {/*        <UserInfo username={props.userInfo.name} email={props.userInfo.email}/>*/}
+            {/*    }*/}
+            {/*</div>*/}
+            <SingIn connectWebSocket={props.connectWebSocket} />
+            <NewUser/>
             <DarkModeSwitch toggleTheme={props.toggleTheme}/>
         </div>
 

@@ -1,0 +1,26 @@
+.sing-in-button {
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-right: 10px;
+}
+
+.sing-in-button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+.sing-in-button:active {
+    background-color: #004494;
+    transform: scale(1);
+}
+
+.sing-in-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+}
