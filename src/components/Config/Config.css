@@ -6,3 +6,9 @@
     flex-direction: row;
 }
 
+.auth-inner-container {
+    display: flex;
+    flex-direction: row;
+    width: 10.7vw;
+}
+

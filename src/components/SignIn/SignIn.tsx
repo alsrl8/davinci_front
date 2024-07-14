@@ -3,7 +3,7 @@ import SignInModal from "./SignInModal";
 import {useState} from "react";
 
 interface SignInProps {
-    connectWebSocket: () => void;
+    connectWebSocket: () => Promise<void>;
 }
 
 const SingIn = (props: SignInProps) => {

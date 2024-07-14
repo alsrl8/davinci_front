@@ -18,6 +18,14 @@ const Main = () => {
         document.body.className = isDarkMode ? 'dark-mode' : 'light-mode';
     }, [isDarkMode]);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            if (userInfo !== null) return;
+            await connectWebSocket();
+        };
+        fetchData();
+    }, [userInfo]);
+
     const connectWebSocket = async () => {
         const chatServerUrl = process.env.REACT_APP_CHAT_SERVER_URL;
         const urlScheme = process.env.REACT_APP_ENV === "production" ? "wss" : "ws";

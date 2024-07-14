@@ -5,7 +5,7 @@ import {Form, Input, Modal} from "antd";
 interface SingInModalProps {
     isModalOpen: boolean;
     setIsModalOpen: Dispatch<SetStateAction<boolean>>;
-    connectWebSocket: () => void;
+    connectWebSocket: () => Promise<void>;
 }
 
 const SignInModal = (props: SingInModalProps) => {
@@ -36,7 +36,7 @@ const SignInModal = (props: SingInModalProps) => {
             if (response.ok) {
                 clearUserInput();
                 props.setIsModalOpen(false);
-                props.connectWebSocket();
+                await props.connectWebSocket();
             } else {
                 const data = await response.json()
                 if (data.error !== undefined) {
