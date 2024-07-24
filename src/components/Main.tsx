@@ -7,18 +7,6 @@ import Config from "./Config/Config";
 import {UserInfoInterface} from "./Interface/UserInfo";
 import {ChatObject} from "../types/Chat";
 
-const checkCookieToken = (name: string) => {
-    const cookies = document.cookie.split(";");
-    console.log("cookies: ", cookies);
-    for (let cookie of cookies) {
-        const trimmedCookie = cookie.trim();
-        if (trimmedCookie.startsWith(name + "=")) {
-            return true
-        }
-    }
-    return false
-}
-
 
 const Main = () => {
     const {isDarkMode, toggleTheme} = useTheme();
@@ -33,7 +21,6 @@ const Main = () => {
     useEffect(() => {
         const fetchData = async () => {
             if (userInfo !== null) return;
-            if (!checkCookieToken("token")) return;
 
             const chatServerUrl = process.env.REACT_APP_CHAT_SERVER_URL;
             const urlScheme = process.env.REACT_APP_ENV === "production" ? "https" : "http";
@@ -46,6 +33,11 @@ const Main = () => {
                 },
                 credentials: 'include',
             });
+
+            if (!response.ok) {
+                setUserInfo(null);
+                return;
+            }
 
             const data = await response.json();
             setUserInfo(prev => {
