@@ -1,5 +1,6 @@
 import React from 'react';
 import "./UserInfo.css";
+import Cookies from "js-cookie";
 
 interface UserInfoProps {
     username: string;
@@ -8,8 +9,13 @@ interface UserInfoProps {
 
 
 const UserInfo = (props: UserInfoProps) => {
+    const onClick = () => {
+        Cookies.remove('token');
+        window.location.reload();
+    }
+
     return (
-        <div className="user-info">
+        <div className="user-info" onClick={onClick}>
             <p>{props.username}</p>
         </div>
     )

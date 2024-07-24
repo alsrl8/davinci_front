@@ -6,6 +6,7 @@ import "./Main.css";
 import Config from "./Config/Config";
 import {UserInfoInterface} from "./Interface/UserInfo";
 import {ChatObject} from "../types/Chat";
+import Cookie from 'js-cookie';
 
 
 const Main = () => {
@@ -13,6 +14,7 @@ const Main = () => {
     const [socket, setSocket] = useState<WebSocket | null>(null);
     const [messages, setMessages] = useState<string[]>([]);
     const [userInfo, setUserInfo] = useState<UserInfoInterface | null>(null);
+    const token = Cookie.get('token');
 
     useEffect(() => {
         document.body.className = isDarkMode ? 'dark-mode' : 'light-mode';
@@ -21,10 +23,36 @@ const Main = () => {
     useEffect(() => {
         const fetchData = async () => {
             if (userInfo !== null) return;
+            const token = Cookie.get('token');
+            if (token === null || token === undefined) return;
+
+            const chatServerUrl = process.env.REACT_APP_CHAT_SERVER_URL;
+            const urlScheme = process.env.REACT_APP_ENV === "production" ? "https" : "http";
+
+            const addUserUrl = `${urlScheme}://${chatServerUrl}/auto-login`
+            const response = await fetch(addUserUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+            });
+
+            const data = await response.json();
+            setUserInfo(prev => {
+                return {
+                    "name": data.name,
+                    "email": data.email,
+                }
+            })
+
             await connectWebSocket();
         };
-        fetchData();
-    }, [userInfo]);
+
+        fetchData().then(r => {
+            return
+        });
+    }, [userInfo, token]);
 
     const connectWebSocket = async () => {
         const chatServerUrl = process.env.REACT_APP_CHAT_SERVER_URL;
