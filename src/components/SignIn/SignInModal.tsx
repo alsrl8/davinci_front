@@ -1,11 +1,13 @@
 import "./SingInModal.css";
-import {Dispatch, SetStateAction, useState} from "react";
+import React, {Dispatch, SetStateAction, useState} from "react";
 import {Form, Input, Modal} from "antd";
+import {UserInfoInterface} from "../Interface/UserInfo";
 
 interface SingInModalProps {
     isModalOpen: boolean;
     setIsModalOpen: Dispatch<SetStateAction<boolean>>;
     connectWebSocket: () => Promise<void>;
+    setUserInfo: React.Dispatch<React.SetStateAction<UserInfoInterface | null>>
 }
 
 const SignInModal = (props: SingInModalProps) => {
@@ -37,6 +39,14 @@ const SignInModal = (props: SingInModalProps) => {
                 clearUserInput();
                 props.setIsModalOpen(false);
                 await props.connectWebSocket();
+
+                const data = await response.json();
+                props.setUserInfo(prev => {
+                    return {
+                        name: data.name,
+                        email: data.email,
+                    }
+                })
             } else {
                 const data = await response.json()
                 if (data.error !== undefined) {

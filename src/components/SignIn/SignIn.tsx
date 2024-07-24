@@ -1,9 +1,11 @@
 import "./SignIn.css";
 import SignInModal from "./SignInModal";
-import {useState} from "react";
+import React, {useState} from "react";
+import {UserInfoInterface} from "../Interface/UserInfo";
 
 interface SignInProps {
     connectWebSocket: () => Promise<void>;
+    setUserInfo: React.Dispatch<React.SetStateAction<UserInfoInterface | null>>
 }
 
 const SingIn = (props: SignInProps) => {
@@ -20,6 +22,7 @@ const SingIn = (props: SignInProps) => {
                 isModalOpen={isModalOpen}
                 setIsModalOpen={setIsModalOpen}
                 connectWebSocket={props.connectWebSocket}
+                setUserInfo={props.setUserInfo}
             />
         </>
     )

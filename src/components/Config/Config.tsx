@@ -26,6 +26,7 @@ const Config = (props: ConfigProps) => {
                     <div className="auth-inner-container">
                         <SingIn
                             connectWebSocket={props.connectWebSocket}
+                            setUserInfo={props.setUserInfo}
                         />
                         <NewUser/>
                     </div>
