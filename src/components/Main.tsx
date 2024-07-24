@@ -9,6 +9,7 @@ import {ChatObject} from "../types/Chat";
 
 const checkCookieToken = (name: string) => {
     const cookies = document.cookie.split(";");
+    console.log("cookies: ", cookies);
     for (let cookie of cookies) {
         const trimmedCookie = cookie.trim();
         if (trimmedCookie.startsWith(name + "=")) {
