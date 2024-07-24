@@ -24,7 +24,6 @@ const Main = () => {
         const fetchData = async () => {
             if (userInfo !== null) return;
             const token = Cookie.get('token');
-            console.log("token: ", token)
             if (token === null || token === undefined) return;
 
             const chatServerUrl = process.env.REACT_APP_CHAT_SERVER_URL;
@@ -50,6 +49,7 @@ const Main = () => {
             await connectWebSocket();
         };
 
+        console.log("token: ", token)
         fetchData().then(r => {
             return
         });
