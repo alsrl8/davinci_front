@@ -10,7 +10,7 @@ interface UserInfoProps {
 
 const UserInfo = (props: UserInfoProps) => {
     const onClick = () => {
-        Cookies.remove('token');
+        Cookies.remove('token', {domain: '.songmingi.com', path: '/'});
         window.location.reload();
     }
 
