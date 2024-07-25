@@ -6,7 +6,6 @@ import "./Main.css";
 import Config from "./Config/Config";
 import {UserInfoInterface} from "./Interface/UserInfo";
 import {ChatObject} from "../types/Chat";
-import Cookie from 'js-cookie';
 
 
 const Main = () => {
@@ -14,7 +13,6 @@ const Main = () => {
     const [socket, setSocket] = useState<WebSocket | null>(null);
     const [messages, setMessages] = useState<string[]>([]);
     const [userInfo, setUserInfo] = useState<UserInfoInterface | null>(null);
-    const token = Cookie.get('token');
 
     useEffect(() => {
         document.body.className = isDarkMode ? 'dark-mode' : 'light-mode';
@@ -23,8 +21,6 @@ const Main = () => {
     useEffect(() => {
         const fetchData = async () => {
             if (userInfo !== null) return;
-            const token = Cookie.get('token');
-            if (token === null || token === undefined) return;
 
             const chatServerUrl = process.env.REACT_APP_CHAT_SERVER_URL;
             const urlScheme = process.env.REACT_APP_ENV === "production" ? "https" : "http";
@@ -37,6 +33,11 @@ const Main = () => {
                 },
                 credentials: 'include',
             });
+
+            if (!response.ok) {
+                setUserInfo(null);
+                return;
+            }
 
             const data = await response.json();
             setUserInfo(prev => {
@@ -52,7 +53,7 @@ const Main = () => {
         fetchData().then(r => {
             return
         });
-    }, [userInfo, token]);
+    }, [userInfo]);
 
     const connectWebSocket = async () => {
         const chatServerUrl = process.env.REACT_APP_CHAT_SERVER_URL;
