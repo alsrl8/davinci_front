@@ -22,24 +22,27 @@ const Config = (props: ConfigProps) => {
         <div className="config-container">
             {/*<Ping />*/}
             <div className="auth-container">
-                {props.userInfo === null ?
-                    <div className="auth-inner-container">
-                        <SingIn
-                            connectWebSocket={props.connectWebSocket}
-                            setUserInfo={props.setUserInfo}
-                        />
-                        <NewUser/>
-                    </div>
-                    :
-                    <>
-                        <UserInfo
-                            username={props.userInfo.name}
-                            email={props.userInfo.email}
-                        />
-                    </>
-                }
+                <div className="auth-inner-container">
+                    {props.userInfo === null ?
+                        <>
+                            <SingIn
+                                connectWebSocket={props.connectWebSocket}
+                                setUserInfo={props.setUserInfo}
+                            />
+                            <NewUser/>
+                            <DarkModeSwitch toggleTheme={props.toggleTheme}/>
+                        </>
+                        :
+                        <>
+                            <UserInfo
+                                username={props.userInfo.name}
+                                email={props.userInfo.email}
+                            />
+                            <DarkModeSwitch toggleTheme={props.toggleTheme}/>
+                        </>
+                    }
+                </div>
             </div>
-            <DarkModeSwitch toggleTheme={props.toggleTheme}/>
         </div>
     )
 }

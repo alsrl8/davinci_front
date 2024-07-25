@@ -9,6 +9,8 @@
 .auth-inner-container {
     display: flex;
     flex-direction: row;
-    width: 10.7vw;
 }
 
+.auth-inner-container > *:not(:last-child) {
+    margin-right: 1vh; /* Default value for large screens */
+}
