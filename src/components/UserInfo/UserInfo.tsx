@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useReducer} from 'react';
 import "./UserInfo.css";
+import {useAppContext} from "../../AppContext";
 
 interface UserInfoProps {
     username: string;
@@ -38,7 +39,12 @@ const logout = async () => {
 
 
 const UserInfo = (props: UserInfoProps) => {
+    const {state} = useAppContext();
+
     const onClick = async () => {
+        if (state.userInfo?.isGuest) {
+            return;
+        }
         await logout()
         window.location.reload();
     }

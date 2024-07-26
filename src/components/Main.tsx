@@ -4,15 +4,15 @@ import {useTheme} from "../contexts/ThemeContext";
 import Chat from "./Chat/Chat";
 import "./Main.css";
 import Config from "./Config/Config";
-import {UserInfoInterface} from "./Interface/UserInfo";
 import {ChatObject} from "../types/Chat";
+import {useAppContext} from "../AppContext";
 
 
 const Main = () => {
     const {isDarkMode, toggleTheme} = useTheme();
     const [socket, setSocket] = useState<WebSocket | null>(null);
     const [messages, setMessages] = useState<string[]>([]);
-    const [userInfo, setUserInfo] = useState<UserInfoInterface | null>(null);
+    const {state, dispatch} = useAppContext();
 
     useEffect(() => {
         document.body.className = isDarkMode ? 'dark-mode' : 'light-mode';
@@ -20,7 +20,8 @@ const Main = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            if (userInfo !== null) return;
+            if (socket !== null) return;
+            if (state.userInfo !== null) return;
 
             const chatServerUrl = process.env.REACT_APP_CHAT_SERVER_URL;
             const urlScheme = process.env.REACT_APP_ENV === "production" ? "https" : "http";
@@ -35,27 +36,27 @@ const Main = () => {
             });
 
             if (!response.ok) {
-                setUserInfo(null);
+                dispatch({type: 'CLEAR_USER_INFO'});
                 return;
             }
 
             const data = await response.json();
-            setUserInfo(prev => {
-                return {
-                    "name": data.name,
-                    "email": data.email,
-                }
-            })
+            dispatch({type: 'SET_USER_INFO', payload: {name: data.name, email: data.email, isGuest: data.isGuest}});
 
             await connectWebSocket();
         };
 
-        fetchData().then(r => {
+        fetchData().then(() => {
             return
         });
-    }, [userInfo]);
+    }, [dispatch, state.userInfo]);
 
     const connectWebSocket = async () => {
+        if (socket !== null) {
+            socket.close();
+            setSocket(null);
+        }
+
         const chatServerUrl = process.env.REACT_APP_CHAT_SERVER_URL;
         const urlScheme = process.env.REACT_APP_ENV === "production" ? "wss" : "ws";
         if (!chatServerUrl) {
@@ -66,7 +67,6 @@ const Main = () => {
         const newSocket = new WebSocket(chatWsUrl);
         newSocket.onopen = () => {
             setSocket(newSocket);
-            console.log('WebSocket connection established');
         };
         newSocket.onmessage = (event) => {
             try {
@@ -78,7 +78,7 @@ const Main = () => {
             }
         };
         newSocket.onclose = () => {
-            console.log('WebSocket connection closed');
+
         };
         newSocket.onerror = (error) => {
             console.log('WebSocket error:', error);
@@ -96,10 +96,7 @@ const Main = () => {
             </div>
             <Config
                 toggleTheme={toggleTheme}
-                userInfo={userInfo}
                 setSocket={setSocket}
-                setMessages={setMessages}
-                setUserInfo={setUserInfo}
                 connectWebSocket={connectWebSocket}
             />
         </div>

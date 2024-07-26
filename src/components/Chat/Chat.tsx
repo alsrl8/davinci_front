@@ -31,6 +31,8 @@ const Chat = (props: ChatProps) => {
 
 
     const sendMessage = () => {
+        if (message === "") return;
+
         if (props.socket && props.socket.readyState === WebSocket.OPEN) {
             props.socket.send(message);
             setMessage('');

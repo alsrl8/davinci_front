@@ -1,18 +1,22 @@
 import "./SingInModal.css";
 import React, {Dispatch, SetStateAction, useState} from "react";
 import {Form, Input, Modal} from "antd";
-import {UserInfoInterface} from "../Interface/UserInfo";
+import {useAppContext} from "../../AppContext";
 
 interface SingInModalProps {
     isModalOpen: boolean;
     setIsModalOpen: Dispatch<SetStateAction<boolean>>;
     connectWebSocket: () => Promise<void>;
-    setUserInfo: React.Dispatch<React.SetStateAction<UserInfoInterface | null>>
 }
 
 const SignInModal = (props: SingInModalProps) => {
     const [userEmail, setUserEmail] = useState('');
     const [userPassword, setUserPassword] = useState('');
+    const {dispatch} = useAppContext();
+
+    const updateUserInfo = (name: string, email: string) => {
+        dispatch({type: 'SET_USER_INFO', payload: {name: name, email: email, isGuest:false}});
+    };
 
     const onClickOk = async () => {
         const chatServerUrl = process.env.REACT_APP_CHAT_SERVER_URL;
@@ -41,12 +45,7 @@ const SignInModal = (props: SingInModalProps) => {
                 await props.connectWebSocket();
 
                 const data = await response.json();
-                props.setUserInfo(prev => {
-                    return {
-                        name: data.name,
-                        email: data.email,
-                    }
-                })
+                updateUserInfo(data.name, data.email);
             } else {
                 const data = await response.json()
                 if (data.error !== undefined) {
