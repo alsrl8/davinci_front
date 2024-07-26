@@ -1,0 +1,45 @@
+.menu-container {
+    position: fixed;
+    top: 0.9vh;
+    right: 0.5vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.game-modal-button {
+    width: 20vh;
+    margin-top: 1vh;
+    align-self: flex-end;
+    background-color: #007bff; /* Bright blue */
+    color: #ffffff;
+    border: 2px solid #009bff; /* Subtle blue outline */
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-modal-button:hover {
+    background-color: #0056b3; /* Darker blue for hover */
+    border-color: #004494; /* Darker outline for emphasis */
+    transform: translateY(-3px); /* More noticeable lift */
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3); /* Larger shadow for added depth */
+    color: #e0f7fa; /* Lighter text color for a highlight effect */
+}
+
+.game-modal-button:active {
+    background-color: #004494; /* Even darker for the active state */
+    border-color: #003073; /* Deep blue for border on active */
+    transform: translateY(-1px); /* Mimic a button press */
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.25);
+}
+
+.game-modal-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5); /* Maintaining the blue glow for focus */
+}

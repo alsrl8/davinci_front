@@ -15,7 +15,7 @@ const SignIn = (props: SignInProps) => {
 
     return (
         <>
-            <button className="sing-in-button" onClick={handleClick}>Sign In</button>
+            <button className="sign-in-button" onClick={handleClick}>Sign In</button>
             <SignInModal
                 isModalOpen={isModalOpen}
                 setIsModalOpen={setIsModalOpen}

@@ -1,7 +1,4 @@
 .config-container {
-    position: fixed;
-    top: 0.9vh;
-    right: 0.5vh;
     display: flex;
     flex-direction: row;
 }

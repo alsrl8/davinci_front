@@ -3,9 +3,10 @@ import React, {useEffect, useState} from 'react';
 import {useTheme} from "../contexts/ThemeContext";
 import Chat from "./Chat/Chat";
 import "./Main.css";
-import Config from "./Config/Config";
+import Menu from "./Menu/Menu";
 import {ChatObject} from "../types/Chat";
 import {useAppContext} from "../AppContext";
+import GameModal from "./GameModal/GameModal";
 
 
 const Main = () => {
@@ -50,7 +51,7 @@ const Main = () => {
         fetchData().then(() => {
             return
         });
-    }, [dispatch, state.userInfo]);
+    }, [state.userInfo]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -107,20 +108,22 @@ const Main = () => {
     }
 
     return (
-        <div className="main-container">
-            <div className="chat-container">
-                <Chat
-                    socket={socket}
-                    messages={messages}
-                    number={number}
+        <>
+            <div className="main-container">
+                <div className="chat-container">
+                    <Chat
+                        socket={socket}
+                        messages={messages}
+                        number={number}
+                    />
+                </div>
+                <Menu
+                    toggleTheme={toggleTheme}
+                    setSocket={setSocket}
+                    connectWebSocket={connectWebSocket}
                 />
             </div>
-            <Config
-                toggleTheme={toggleTheme}
-                setSocket={setSocket}
-                connectWebSocket={connectWebSocket}
-            />
-        </div>
+        </>
     );
 };
 
