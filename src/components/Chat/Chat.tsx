@@ -5,6 +5,7 @@ import './Chat.css';
 interface ChatProps {
     socket: WebSocket | null;
     messages: string[]
+    number: number;
 }
 
 const Chat = (props: ChatProps) => {
@@ -49,7 +50,7 @@ const Chat = (props: ChatProps) => {
 
     return (
         <div className="chat-container">
-            <h1 className="title">Chat</h1>
+            <h1 className="title">Chat ({props.number})</h1>
             <div className="messages-container">
                 {props.messages.map((msg, index) => (
                     <div key={index}>{msg}</div>

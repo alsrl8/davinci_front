@@ -12,6 +12,7 @@ const Main = () => {
     const {isDarkMode, toggleTheme} = useTheme();
     const [socket, setSocket] = useState<WebSocket | null>(null);
     const [messages, setMessages] = useState<string[]>([]);
+    const [number, setNumber] = useState(0);
     const {state, dispatch} = useAppContext();
 
     useEffect(() => {
@@ -21,7 +22,7 @@ const Main = () => {
     useEffect(() => {
         const fetchData = async () => {
             if (socket !== null) return;
-            if (state.userInfo !== null) return;
+            else if (state.userInfo !== null) return;
 
             const chatServerUrl = process.env.REACT_APP_CHAT_SERVER_URL;
             const urlScheme = process.env.REACT_APP_ENV === "production" ? "https" : "http";
@@ -50,6 +51,25 @@ const Main = () => {
             return
         });
     }, [dispatch, state.userInfo]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const chatServerUrl = process.env.REACT_APP_CHAT_SERVER_URL;
+            const urlScheme = process.env.REACT_APP_ENV === "production" ? "https" : "http";
+
+            const addUserUrl = `${urlScheme}://${chatServerUrl}/count-active-user`
+            const response = await fetch(addUserUrl, {
+                method: 'GET',
+            });
+
+            const data = await response.json();
+            setNumber(data.number);
+        };
+
+        fetchData().then(() => {
+            return
+        });
+    }, [messages])
 
     const connectWebSocket = async () => {
         if (socket !== null) {
@@ -92,6 +112,7 @@ const Main = () => {
                 <Chat
                     socket={socket}
                     messages={messages}
+                    number={number}
                 />
             </div>
             <Config
