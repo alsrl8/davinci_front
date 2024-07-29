@@ -6,7 +6,6 @@ import "./Main.css";
 import Menu from "./Menu/Menu";
 import {ChatObject} from "../types/Chat";
 import {useAppContext} from "../AppContext";
-import GameModal from "./GameModal/GameModal";
 
 
 const Main = () => {
