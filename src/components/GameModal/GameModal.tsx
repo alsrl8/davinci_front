@@ -15,8 +15,12 @@ interface Bounds {
     bottom: number;
 }
 
+interface GameModalSize {
+    size: 'small' | 'medium' | 'large';
+}
+
 const GameModal = (props: GameModalProps) => {
-    // const [disabled, setDisabled] = useState(true);
+    const [size, setSize] = useState<GameModalSize>({size: 'large'});
     const [bounds, setBounds] = useState<Bounds>({left: 0, top: 0, right: 0, bottom: 0});
 
     const onStart = (event: DraggableEvent, uiData: DraggableData) => {
@@ -30,34 +34,31 @@ const GameModal = (props: GameModalProps) => {
         });
     };
 
-    const pingTest = async () => {
-        const gameServerUrl = process.env.REACT_APP_GAME_SERVER_URL;
-        const urlScheme = process.env.REACT_APP_ENV === "production" ? "https" : "http";
-
-        const addUserUrl = `${urlScheme}://${gameServerUrl}/ping`
-        const response = await fetch(addUserUrl, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include',
-        });
-
-        if (!response.ok) {
-            console.log("fail")
-            console.log(response.body)
-            return;
-        }
-
-        const data = await response.json();
-        console.log("success")
-        console.log(data);
+    const onSmallSizeButtonClick = () => {
+        setSize({size: 'small'});
     }
+
+    const onMediumSizeButtonClick = () => {
+        setSize({size: 'medium'});
+    }
+
+    const onLargeSizeButtonClick = () => {
+        setSize({size: 'large'});
+    }
+
+    const getModalSize = () => {
+        switch (size.size) {
+            case 'small': return { width: 400, bodyStyle: { height: '30vh' } };
+            case 'large': return { width: 800, bodyStyle: { height: '70vh' } };
+            default: return { width: 600, bodyStyle: { height: '50vh' } };
+        }
+    };
 
     return (
         <>
             <Modal
-
+                width={getModalSize().width}
+                bodyStyle={getModalSize().bodyStyle}
                 title={
                     <div
                         className="modal-handle"
@@ -79,7 +80,9 @@ const GameModal = (props: GameModalProps) => {
                 }}
                 closable={false}
             >
-                <Button onClick={pingTest}>Ping Test</Button>
+                <Button onClick={onSmallSizeButtonClick}>Small Size</Button>
+                <Button onClick={onMediumSizeButtonClick}>Medium Size</Button>
+                <Button onClick={onLargeSizeButtonClick}>Large Size</Button>
             </Modal>
         </>
     );

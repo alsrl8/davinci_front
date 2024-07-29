@@ -1,6 +1,3 @@
-/* GameModal.css */
-
-/* Style the handle for dragging the modal */
 .modal-handle {
     height: 3vh;
     width: 100%;
@@ -29,10 +26,23 @@
     color: #ccc;
 }
 
-.react-draggable {
+.ant-modal-content {
     background: #1f1f1f !important;
     border: #e0e0e0 solid 1px !important;
-    /*border-color: white !important;*/
-    /*border-width: 2px !important;*/
+}
+
+.modal-small {
+    height: 30vh;
+    width: 40vw;
+}
+
+.modal-medium {
+    height: 50vh;
+    width: 200vw;
+}
+
+.modal-large {
+    height: 70vh;
+    width: 80vw;
 }
 
