@@ -28,7 +28,10 @@ const Menu = (props: MenuProps) => {
                 />
                 <div className="game-modal-button" onClick={onGameModalButtonClick}>Game</div>
             </div>
-            <GameModal isModalOpen={isGameModalOpen}/>
+            <GameModal
+                isModalOpen={isGameModalOpen}
+                setIsModalOpen={setIsGameModalOpen}
+            />
         </>
     );
 }

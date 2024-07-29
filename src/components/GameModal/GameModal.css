@@ -1,0 +1,26 @@
+.modal-handle {
+    height: 3vh;
+    width: 100%;
+    cursor: grab;
+    background: linear-gradient(to right, #4a4a4a, #2c2c2c);
+    box-shadow: inset 0 -3px 5px rgba(0, 0, 0, 0.2);
+    color: #fff;
+    border: 0.5vh solid #007BFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+}
+
+.modal-handle:active {
+    cursor: grabbing;
+    background: linear-gradient(to right, #2c2c2c, #4a4a4a);
+    border: 0.8vh solid #007BFF;
+}
+
+.modal-handle:before {
+    content: '⋮⋮';
+    font-size: 1.8vh;
+
+    color: #ccc;
+}

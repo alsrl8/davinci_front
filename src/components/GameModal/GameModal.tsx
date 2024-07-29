@@ -1,9 +1,11 @@
 import {Modal} from "antd";
 import Draggable, {DraggableData, DraggableEvent} from 'react-draggable';
-import {useState} from "react";
+import React, {useState} from "react";
+import "./GameModal.css"
 
 interface GameModalProps {
     isModalOpen: boolean;
+    setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface Bounds {
@@ -14,18 +16,8 @@ interface Bounds {
 }
 
 const GameModal = (props: GameModalProps) => {
-    const [visible, setVisible] = useState(false);
     const [disabled, setDisabled] = useState(true);
     const [bounds, setBounds] = useState<Bounds>({left: 0, top: 0, right: 0, bottom: 0});
-
-
-    const handleOk = () => {
-        setVisible(false);
-    };
-
-    const handleCancel = () => {
-        setVisible(false);
-    };
 
 
     const onStart = (event: DraggableEvent, uiData: DraggableData) => {
@@ -44,25 +36,21 @@ const GameModal = (props: GameModalProps) => {
             <Modal
                 title={
                     <div
-                        style={{
-                            height: '20px',
-                            width: '100%',
-                            cursor: 'move',
-                        }}
+                        className="modal-handle"
                         onMouseOver={() => setDisabled(false)}
                         onMouseOut={() => setDisabled(true)}
-                        onMouseDown={() => setDisabled(true)} // Fix for cursor flickering issue
-                    >
-                    </div>
+                        onMouseDown={() => setDisabled(true)}
+                    />
                 }
                 open={props.isModalOpen}
-                onOk={handleOk}
-                onCancel={handleCancel}
                 modalRender={(modal) => (
                     <Draggable disabled={disabled} bounds={bounds} onStart={onStart}>
                         <div>{modal}</div>
                     </Draggable>
                 )}
+                footer={null}
+                onCancel={() => {props.setIsModalOpen(false)}}
+                closable={false}
             >
                 <p>Modal content can go here...</p>
             </Modal>
