@@ -16,9 +16,8 @@ interface Bounds {
 }
 
 const GameModal = (props: GameModalProps) => {
-    const [disabled, setDisabled] = useState(true);
+    // const [disabled, setDisabled] = useState(true);
     const [bounds, setBounds] = useState<Bounds>({left: 0, top: 0, right: 0, bottom: 0});
-
 
     const onStart = (event: DraggableEvent, uiData: DraggableData) => {
         const {clientWidth, clientHeight} = window.document.documentElement;
@@ -58,18 +57,20 @@ const GameModal = (props: GameModalProps) => {
     return (
         <>
             <Modal
+
                 title={
                     <div
                         className="modal-handle"
-                        onMouseOver={() => setDisabled(false)}
-                        onMouseOut={() => setDisabled(true)}
-                        onMouseDown={() => setDisabled(true)}
                     />
                 }
                 open={props.isModalOpen}
                 modalRender={(modal) => (
-                    <Draggable disabled={disabled} bounds={bounds} onStart={onStart}>
-                        <div>{modal}</div>
+                    <Draggable
+                        handle={".modal-handle"}
+                        bounds={bounds}
+                        onStart={onStart}
+                    >
+                        {modal}
                     </Draggable>
                 )}
                 footer={null}

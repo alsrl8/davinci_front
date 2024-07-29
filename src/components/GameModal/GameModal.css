@@ -1,3 +1,6 @@
+/* GameModal.css */
+
+/* Style the handle for dragging the modal */
 .modal-handle {
     height: 3vh;
     width: 100%;
@@ -10,6 +13,8 @@
     align-items: center;
     justify-content: center;
     user-select: none;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
 }
 
 .modal-handle:active {
@@ -21,6 +26,13 @@
 .modal-handle:before {
     content: '⋮⋮';
     font-size: 1.8vh;
-
     color: #ccc;
 }
+
+.react-draggable {
+    background: #1f1f1f !important;
+    border: #e0e0e0 solid 1px !important;
+    /*border-color: white !important;*/
+    /*border-width: 2px !important;*/
+}
+
