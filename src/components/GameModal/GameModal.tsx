@@ -1,4 +1,4 @@
-import {Modal} from "antd";
+import {Button, Modal} from "antd";
 import Draggable, {DraggableData, DraggableEvent} from 'react-draggable';
 import React, {useState} from "react";
 import "./GameModal.css"
@@ -31,6 +31,30 @@ const GameModal = (props: GameModalProps) => {
         });
     };
 
+    const pingTest = async () => {
+        const gameServerUrl = process.env.REACT_APP_GAME_SERVER_URL;
+        const urlScheme = process.env.REACT_APP_ENV === "production" ? "https" : "http";
+
+        const addUserUrl = `${urlScheme}://${gameServerUrl}/ping`
+        const response = await fetch(addUserUrl, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+        });
+
+        if (!response.ok) {
+            console.log("fail")
+            console.log(response.body)
+            return;
+        }
+
+        const data = await response.json();
+        console.log("success")
+        console.log(data);
+    }
+
     return (
         <>
             <Modal
@@ -49,10 +73,12 @@ const GameModal = (props: GameModalProps) => {
                     </Draggable>
                 )}
                 footer={null}
-                onCancel={() => {props.setIsModalOpen(false)}}
+                onCancel={() => {
+                    props.setIsModalOpen(false)
+                }}
                 closable={false}
             >
-                <p>Modal content can go here...</p>
+                <Button onClick={pingTest}>Ping Test</Button>
             </Modal>
         </>
     );

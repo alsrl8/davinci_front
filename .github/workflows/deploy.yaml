@@ -28,6 +28,7 @@ jobs:
           npm run build
         env:
           REACT_APP_CHAT_SERVER_URL: 'chat.songmingi.com:8080'
+          REACT_APP_GAME_SERVER_URL: 'game.songmingi.com:8081'
           REACT_APP_ENV: 'production'
 
       - name: Configure AWS credentials
