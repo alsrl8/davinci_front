@@ -1,5 +1,6 @@
 import {List, Modal, Radio} from "antd";
 import {useState} from "react";
+import {sendApiRequest} from "../../utils/api";
 
 interface InvitationModalProps {
     isModalOpen: boolean;
@@ -12,7 +13,15 @@ const InvitationModal = (props: InvitationModalProps) => {
     const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
 
     const onOkButtonClick = () => {
-        console.log(selectedEmail);
+        sendApiRequest(
+            {
+                method: "POST",
+                body: {'userEmail': selectedEmail},
+                params: null,
+                server: "chat",
+                endpoint: "send-invitation"
+            }
+        ).then(r => {})
         props.setModalOpen(false);
     }
 
