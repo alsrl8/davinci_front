@@ -48,9 +48,12 @@ const GameModal = (props: GameModalProps) => {
 
     const getModalSize = () => {
         switch (size.size) {
-            case 'small': return { width: 400, bodyStyle: { height: '30vh' } };
-            case 'large': return { width: 800, bodyStyle: { height: '70vh' } };
-            default: return { width: 600, bodyStyle: { height: '50vh' } };
+            case 'small':
+                return {width: '30vw', bodyStyle: {height: '30vh'}};
+            case 'large':
+                return {width: '80vw', bodyStyle: {height: '80vh'}};
+            default:
+                return {width: '60vw', bodyStyle: {height: '60vh'}};
         }
     };
 
@@ -80,9 +83,11 @@ const GameModal = (props: GameModalProps) => {
                 }}
                 closable={false}
             >
-                <Button onClick={onSmallSizeButtonClick}>Small Size</Button>
-                <Button onClick={onMediumSizeButtonClick}>Medium Size</Button>
-                <Button onClick={onLargeSizeButtonClick}>Large Size</Button>
+                <div className="size-button-container">
+                    <Button className="size-button" onClick={onSmallSizeButtonClick}>S</Button>
+                    <Button className="size-button" onClick={onMediumSizeButtonClick}>M</Button>
+                    <Button className="size-button" onClick={onLargeSizeButtonClick}>L</Button>
+                </div>
             </Modal>
         </>
     );

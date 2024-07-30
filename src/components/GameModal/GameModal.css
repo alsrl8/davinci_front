@@ -46,3 +46,19 @@
     width: 80vw;
 }
 
+.size-button-container {
+    display: flex;
+    flex-direction: row;
+    position: fixed;
+    right: 1vw;
+}
+
+.size-button {
+    width: 0.1vw;
+    height: 0.1vh;
+    padding: 0.5vw;
+    font-size: 12px;
+    margin-right: 0.1vw;
+    border-color: #007BFF;
+}
+
