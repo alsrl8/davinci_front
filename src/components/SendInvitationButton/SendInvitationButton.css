@@ -1,0 +1,15 @@
+.send-invitation-container {
+
+}
+
+.send-invitation-button {
+    width: 8vw;
+    height: 4vh;
+    font-size: 1vw;
+}
+
+.send-invitation-input {
+    width: 8vw;
+    font-size: 1vw;
+    height: 4vh;
+}

@@ -2,6 +2,7 @@ import {Button, Modal} from "antd";
 import Draggable, {DraggableData, DraggableEvent} from 'react-draggable';
 import React, {useState} from "react";
 import "./GameModal.css"
+import GameModalInfo from "../GameModalInfo/GameModalInfo";
 
 interface GameModalProps {
     isModalOpen: boolean;
@@ -19,9 +20,11 @@ interface GameModalSize {
     size: 'small' | 'medium' | 'large';
 }
 
+
 const GameModal = (props: GameModalProps) => {
     const [size, setSize] = useState<GameModalSize>({size: 'large'});
     const [bounds, setBounds] = useState<Bounds>({left: 0, top: 0, right: 0, bottom: 0});
+    const [gameRoomNumber, setGameRoomNumber] = useState<number | null>(null);
 
     const onStart = (event: DraggableEvent, uiData: DraggableData) => {
         const {clientWidth, clientHeight} = window.document.documentElement;
@@ -33,6 +36,7 @@ const GameModal = (props: GameModalProps) => {
             bottom: clientHeight - (targetRect.bottom - uiData.y)
         });
     };
+
 
     const onSmallSizeButtonClick = () => {
         setSize({size: 'small'});
@@ -49,19 +53,23 @@ const GameModal = (props: GameModalProps) => {
     const getModalSize = () => {
         switch (size.size) {
             case 'small':
-                return {width: '30vw', bodyStyle: {height: '30vh'}};
+                return {width: 0.3 * window.innerWidth, height: 0.3 * window.innerHeight};
             case 'large':
-                return {width: '80vw', bodyStyle: {height: '80vh'}};
+                return {width: 0.8 * window.innerWidth, height: 0.8 * window.innerHeight};
             default:
-                return {width: '60vw', bodyStyle: {height: '60vh'}};
+                return {width: 0.6 * window.innerWidth, height: 0.6 * window.innerHeight};
         }
     };
 
     return (
         <>
             <Modal
+                styles={{
+                    body: {
+                        height: getModalSize().height
+                    }
+                }}
                 width={getModalSize().width}
-                bodyStyle={getModalSize().bodyStyle}
                 title={
                     <div
                         className="modal-handle"
@@ -88,6 +96,9 @@ const GameModal = (props: GameModalProps) => {
                     <Button className="size-button" onClick={onMediumSizeButtonClick}>M</Button>
                     <Button className="size-button" onClick={onLargeSizeButtonClick}>L</Button>
                 </div>
+                <GameModalInfo
+                    gameRoomNumber={gameRoomNumber}
+                />
             </Modal>
         </>
     );
