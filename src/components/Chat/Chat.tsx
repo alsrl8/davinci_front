@@ -1,10 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
 import './Chat.css';
+import {Message} from "../../types/Chat";
 
 
 interface ChatProps {
     socket: WebSocket | null;
-    messages: string[]
+    messages: Message[]
     number: number;
 }
 
@@ -53,7 +54,9 @@ const Chat = (props: ChatProps) => {
             <h1 className="title">Chat ({props.number})</h1>
             <div className="messages-container">
                 {props.messages.map((msg, index) => (
-                    <div key={index}>{msg}</div>
+                    <div key={index} className={"message" + msg.userType}>
+                        <>[{msg.user}] {msg.message}</>
+                    </div>
                 ))}
             </div>
             <div className="input-container">

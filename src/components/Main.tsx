@@ -4,14 +4,14 @@ import {useTheme} from "../contexts/ThemeContext";
 import Chat from "./Chat/Chat";
 import "./Main.css";
 import Menu from "./Menu/Menu";
-import {ChatObject} from "../types/Chat";
+import {ChatObject, Message} from "../types/Chat";
 import {useAppContext} from "../AppContext";
 
 
 const Main = () => {
     const {isDarkMode, toggleTheme} = useTheme();
     const [socket, setSocket] = useState<WebSocket | null>(null);
-    const [messages, setMessages] = useState<string[]>([]);
+    const [messages, setMessages] = useState<Message[]>([]);
     const [number, setNumber] = useState(0);
     const {state, dispatch} = useAppContext();
 
@@ -91,7 +91,14 @@ const Main = () => {
         newSocket.onmessage = (event) => {
             try {
                 const chatData: ChatObject = JSON.parse(event.data);
-                setMessages((prevMessages) => [...prevMessages, "[" + chatData.user + "] " + chatData.message]);
+                setMessages((prevMessages) => [...prevMessages,
+                    {
+                        userType: chatData.userType,
+                        user: chatData.user,
+                        time: chatData.time,
+                        message: chatData.message,
+                    }
+                ]);
             } catch (error) {
                 setMessages((prevMessages) => [...prevMessages, event.data]);
                 console.log("Failed to parse the incoming data. Error: ", error);

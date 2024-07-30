@@ -20,6 +20,19 @@
     margin-bottom: 5px;
 }
 
+.message0 {
+
+}
+
+.message1 {
+    color: royalblue;
+}
+
+.message2 {
+    color: gray
+}
+
+
 .input-container {
     position: fixed;
     bottom: 30px;
