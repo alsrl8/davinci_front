@@ -3,8 +3,14 @@ import "./SendInvitationButton.css"
 import {sendApiRequest} from "../../utils/api";
 import {useState} from "react";
 import InvitationModal from "../InvitationModal/InvitationModal";
+import {GameRoomInfo} from "../../types/GameRoom";
 
-const SendInvitationButton = () => {
+interface SendInvitationButtonProps {
+    setSocket: React.Dispatch<React.SetStateAction<WebSocket | null>>
+    setRoomInfo: React.Dispatch<React.SetStateAction<GameRoomInfo | null>>
+}
+
+const SendInvitationButton = (props: SendInvitationButtonProps) => {
     const [invitationNameInput, setInvitationNameInput] = useState("");
     const [invitationUserName, setInvitationUserName] = useState("");
     const [invitationUserEmailList, setInvitationUserEmailList] = useState<string[]>([]);
@@ -13,7 +19,7 @@ const SendInvitationButton = () => {
     const onSendInvitationButtonClick = async () => {
         if (invitationNameInput === "") return;
 
-        const data = await sendApiRequest({
+        const userEmailData = await sendApiRequest({
             method: "GET",
             endpoint: "user-email-by-name",
             body: null,
@@ -21,7 +27,7 @@ const SendInvitationButton = () => {
             params: {"name": invitationNameInput},
         })
 
-        if (data.emails.length === 0) {
+        if (userEmailData.emails.length === 0) {
             alert(`There is no user with name (${invitationNameInput}) now.`)
             setInvitationNameInput("");
             return;
@@ -29,7 +35,7 @@ const SendInvitationButton = () => {
 
         setInvitationUserName(invitationNameInput);
         setInvitationNameInput("");
-        setInvitationUserEmailList(data.emails)
+        setInvitationUserEmailList(userEmailData.emails)
         setIsInvitationModalOpen(true);
     }
 
@@ -53,6 +59,8 @@ const SendInvitationButton = () => {
             setModalOpen={setIsInvitationModalOpen}
             invitationUserName={invitationUserName}
             invitationUserEmailList={invitationUserEmailList}
+            setSocket={props.setSocket}
+            setRoomInfo={props.setRoomInfo}
         />
     </div>
 }

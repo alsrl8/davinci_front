@@ -1,18 +1,25 @@
 import "./GameModalInfo.css"
 import SendInvitationButton from "../SendInvitationButton/SendInvitationButton";
+import {GameRoomInfo} from "../../types/GameRoom";
 
 interface GameModalInfoProps {
-    gameRoomNumber: number | null;
+    socket: WebSocket | null;
+    setSocket: React.Dispatch<React.SetStateAction<WebSocket | null>>
+    roomInfo: GameRoomInfo | null;
+    setRoomInfo: React.Dispatch<React.SetStateAction<GameRoomInfo | null>>
 }
 
 const GameModalInfo = (props: GameModalInfoProps) => {
     return <>
-        {props.gameRoomNumber === null ?
+        {props.socket === null ?
             <div className="game-start">
-                <SendInvitationButton />
+                <SendInvitationButton
+                    setSocket={props.setSocket}
+                    setRoomInfo={props.setRoomInfo}
+                />
             </div>
             :
-            <h1>Game {props.gameRoomNumber}</h1>
+            <h1>Game {props.roomInfo?.roomId}</h1>
         }
     </>
 }

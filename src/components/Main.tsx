@@ -6,6 +6,7 @@ import "./Main.css";
 import Menu from "./Menu/Menu";
 import {ChatObject, Message} from "../types/Chat";
 import {useAppContext} from "../AppContext";
+import {sendWebSocketRequest} from "../utils/api";
 
 
 const Main = () => {
@@ -72,45 +73,41 @@ const Main = () => {
     }, [messages])
 
     const connectWebSocket = async () => {
-        if (socket !== null) {
-            socket.close();
-            setSocket(null);
-        }
-
-        const chatServerUrl = process.env.REACT_APP_CHAT_SERVER_URL;
-        const urlScheme = process.env.REACT_APP_ENV === "production" ? "wss" : "ws";
-        if (!chatServerUrl) {
-            throw new Error("REACT_APP_CHAT_SERVER_URL environment variable is not set");
-        }
-
-        const chatWsUrl = `${urlScheme}://${chatServerUrl}/ws`
-        const newSocket = new WebSocket(chatWsUrl);
-        newSocket.onopen = () => {
-            setSocket(newSocket);
-        };
-        newSocket.onmessage = (event) => {
-            try {
-                const chatData: ChatObject = JSON.parse(event.data);
-                setMessages((prevMessages) => [...prevMessages,
-                    {
-                        userType: chatData.userType,
-                        user: chatData.user,
-                        time: chatData.time,
-                        message: chatData.message,
+        const newSocket = await sendWebSocketRequest(
+            {
+                prevSocket: socket,
+                setPrevSocket: setSocket,
+                params: {},
+                endpoint: 'ws',
+                server: "chat",
+                onmessage: (event) => {
+                    try {
+                        const chatData: ChatObject = JSON.parse(event.data);
+                        setMessages((prevMessages) => [...prevMessages,
+                            {
+                                userType: chatData.userType,
+                                user: chatData.user,
+                                time: chatData.time,
+                                message: chatData.message,
+                            }
+                        ]);
+                    } catch (error) {
+                        setMessages((prevMessages) => [...prevMessages, event.data]);
+                        console.log("Failed to parse the incoming data. Error: ", error);
                     }
-                ]);
-            } catch (error) {
-                setMessages((prevMessages) => [...prevMessages, event.data]);
-                console.log("Failed to parse the incoming data. Error: ", error);
-            }
-        };
-        newSocket.onclose = () => {
+                },
+                onerror: (error) => {
+                    console.log('WebSocket error:', error);
+                    console.error('WebSocket Error: ', error);
+                },
+                onOpen: () => {
+                },
+                onClose: () => {
 
-        };
-        newSocket.onerror = (error) => {
-            console.log('WebSocket error:', error);
-            console.error('WebSocket Error: ', error);
-        };
+                }
+            }
+        )
+        setSocket(newSocket);
     }
 
     return (

@@ -6,7 +6,19 @@ interface sendApiRequestProps {
     params: object | null;
 }
 
-const getServerUrl = (props: sendApiRequestProps) => {
+interface sendWebSocketRequestProps {
+    server: 'chat' | 'game';
+    endpoint: string;
+    params: object | null;
+    onOpen: (() => void) | null;
+    onClose: (() => void) | null;
+    onmessage: ((event: MessageEvent<any>) => void) | null;
+    onerror: ((event: Event) => void) | null;
+    prevSocket: WebSocket | null;
+    setPrevSocket: (value: React.SetStateAction<WebSocket | null>) => void
+}
+
+const getServerUrl = (props: sendApiRequestProps | sendWebSocketRequestProps) => {
     if (props.server === "chat") {
         return process.env.REACT_APP_CHAT_SERVER_URL
     } else if (props.server === "game") {
@@ -34,7 +46,6 @@ export const sendApiRequest = async (props: sendApiRequestProps) => {
     let apiUrlEndpoint = `${urlScheme}://${serverUrl}/${props.endpoint}`;
 
     if (props.method === "POST") {
-        console.log("props.body", props.body)
         const response = await fetch(apiUrlEndpoint, {
             method: props.method,
             headers: {
@@ -75,4 +86,52 @@ export const sendApiRequest = async (props: sendApiRequestProps) => {
 
 
     return null;
+}
+
+export const sendWebSocketRequest = async (props: sendWebSocketRequestProps) => {
+    if (props.prevSocket !== null) {
+        props.prevSocket.close();
+        props.setPrevSocket(null);
+    }
+
+    const serverUrl = getServerUrl(props);
+    const urlScheme = process.env.REACT_APP_ENV === "production" ? "wss" : "ws";
+    if (!serverUrl) {
+        if (props.server === "chat") {
+            throw new Error("REACT_APP_CHAT_SERVER_URL environment variable is not set");
+        } else if (props.server === "game") {
+            throw new Error("REACT_APP_GAME_SERVER_URL environment variable is not set");
+        } else {
+            throw new Error("SERVER_URL environment variable is not set");
+        }
+    }
+
+    const wsUrl = `${urlScheme}://${serverUrl}/${props.endpoint}`
+    const newSocket = new WebSocket(wsUrl);
+
+    newSocket.onopen = () => {
+        if (props.onOpen !== null) {
+            props.onOpen();
+        }
+    }
+
+    newSocket.onclose = () => {
+        if (props.onClose !== null) {
+            props.onClose();
+        }
+    }
+
+    newSocket.onmessage = (event) => {
+        if (props.onmessage !== null) {
+            props.onmessage(event);
+        }
+    }
+
+    newSocket.onerror = (error) => {
+        if (props.onerror !== null) {
+            props.onerror(error);
+        }
+    }
+
+    return newSocket;
 }

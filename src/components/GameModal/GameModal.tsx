@@ -3,6 +3,7 @@ import Draggable, {DraggableData, DraggableEvent} from 'react-draggable';
 import React, {useState} from "react";
 import "./GameModal.css"
 import GameModalInfo from "../GameModalInfo/GameModalInfo";
+import {GameRoomInfo} from "../../types/GameRoom";
 
 interface GameModalProps {
     isModalOpen: boolean;
@@ -24,7 +25,8 @@ interface GameModalSize {
 const GameModal = (props: GameModalProps) => {
     const [size, setSize] = useState<GameModalSize>({size: 'large'});
     const [bounds, setBounds] = useState<Bounds>({left: 0, top: 0, right: 0, bottom: 0});
-    const [gameRoomNumber, setGameRoomNumber] = useState<number | null>(null);
+    const [socket, setSocket] = useState<WebSocket | null>(null);
+    const [roomInfo, setRoomInfo] = useState<GameRoomInfo | null>(null);
 
     const onStart = (event: DraggableEvent, uiData: DraggableData) => {
         const {clientWidth, clientHeight} = window.document.documentElement;
@@ -97,7 +99,10 @@ const GameModal = (props: GameModalProps) => {
                     <Button className="size-button" onClick={onLargeSizeButtonClick}>L</Button>
                 </div>
                 <GameModalInfo
-                    gameRoomNumber={gameRoomNumber}
+                    socket={socket}
+                    setSocket={setSocket}
+                    roomInfo={roomInfo}
+                    setRoomInfo={setRoomInfo}
                 />
             </Modal>
         </>
