@@ -6,6 +6,7 @@ import InvitationModal from "../InvitationModal/InvitationModal";
 import {GameRoomInfo} from "../../types/GameRoom";
 
 interface SendInvitationButtonProps {
+    socket: WebSocket | null;
     setSocket: React.Dispatch<React.SetStateAction<WebSocket | null>>
     setRoomInfo: React.Dispatch<React.SetStateAction<GameRoomInfo | null>>
 }
@@ -59,6 +60,7 @@ const SendInvitationButton = (props: SendInvitationButtonProps) => {
             setModalOpen={setIsInvitationModalOpen}
             invitationUserName={invitationUserName}
             invitationUserEmailList={invitationUserEmailList}
+            socket={props.socket}
             setSocket={props.setSocket}
             setRoomInfo={props.setRoomInfo}
         />

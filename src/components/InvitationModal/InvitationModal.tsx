@@ -8,6 +8,7 @@ interface InvitationModalProps {
     setModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     invitationUserName: string;
     invitationUserEmailList: string[];
+    socket: WebSocket | null;
     setSocket: React.Dispatch<React.SetStateAction<WebSocket | null>>
     setRoomInfo: React.Dispatch<React.SetStateAction<GameRoomInfo | null>>
 }
@@ -30,7 +31,7 @@ const InvitationModal = (props: InvitationModalProps) => {
             }
         )
 
-        const socket = await sendWebSocketRequest({
+        const newSocket = await sendWebSocketRequest({
             server: "game",
             endpoint: "",
             params: {},
@@ -46,9 +47,11 @@ const InvitationModal = (props: InvitationModalProps) => {
                 console.log('WebSocket error:', error);
                 console.error('WebSocket Error: ', error);
             },
+            prevSocket: props.socket,
+            setPrevSocket: props.setSocket,
         })
 
-        props.setSocket(socket);
+        props.setSocket(newSocket);
         props.setRoomInfo({
             roomId: data.roomId,
             roomOwnerEmail: data.ownerEmail,

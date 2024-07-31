@@ -14,6 +14,7 @@ const GameModalInfo = (props: GameModalInfoProps) => {
         {props.socket === null ?
             <div className="game-start">
                 <SendInvitationButton
+                    socket={props.socket}
                     setSocket={props.setSocket}
                     setRoomInfo={props.setRoomInfo}
                 />
