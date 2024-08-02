@@ -4,9 +4,9 @@ import {useTheme} from "../contexts/ThemeContext";
 import Chat from "./Chat/Chat";
 import "./Main.css";
 import Menu from "./Menu/Menu";
-import {ChatObject, Message} from "../types/Chat";
+import {ChatObject, GameInvitationObject, Message, UserType} from "../types/Chat";
 import {useAppContext} from "../AppContext";
-import {sendWebSocketRequest} from "../utils/api";
+import {sendApiRequest, sendWebSocketRequest} from "../utils/api";
 
 
 const Main = () => {
@@ -54,20 +54,18 @@ const Main = () => {
     }, [state.userInfo]);
 
     useEffect(() => {
-        const fetchData = async () => {
-            const chatServerUrl = process.env.REACT_APP_CHAT_SERVER_URL;
-            const urlScheme = process.env.REACT_APP_ENV === "production" ? "https" : "http";
-
-            const addUserUrl = `${urlScheme}://${chatServerUrl}/count-active-user`
-            const response = await fetch(addUserUrl, {
+        const getActiveUserNum = () => sendApiRequest(
+            {
+                server: 'chat',
                 method: 'GET',
-            });
+                endpoint: 'count-active-user',
+                params: {},
+                body: null,
+            }
+        )
 
-            const data = await response.json();
+        getActiveUserNum().then((data) => {
             setNumber(data.number);
-        };
-
-        fetchData().then(() => {
             return
         });
     }, [messages])
@@ -83,14 +81,33 @@ const Main = () => {
                 onmessage: (event) => {
                     try {
                         const chatData: ChatObject = JSON.parse(event.data);
-                        setMessages((prevMessages) => [...prevMessages,
-                            {
-                                userType: chatData.userType,
-                                user: chatData.user,
-                                time: chatData.time,
-                                message: chatData.message,
-                            }
-                        ]);
+                        switch (chatData.userType) {
+                            case UserType.GameInvitation:
+                                const gameInvitationData: GameInvitationObject = JSON.parse(event.data);
+                                setMessages((prevMessages) => [...prevMessages,
+                                    {
+                                        userType: gameInvitationData.userType,
+                                        user: gameInvitationData.user,
+                                        time: gameInvitationData.time,
+                                        message: gameInvitationData.message,
+                                        link: {
+                                            endpoint: '',
+                                            params: {'roomId': gameInvitationData.roomId}
+                                        }
+                                    }
+                                ]);
+                                break
+                            default:
+                                setMessages((prevMessages) => [...prevMessages,
+                                    {
+                                        userType: chatData.userType,
+                                        user: chatData.user,
+                                        time: chatData.time,
+                                        message: chatData.message,
+                                        link: null,
+                                    }
+                                ]);
+                        }
                     } catch (error) {
                         setMessages((prevMessages) => [...prevMessages, event.data]);
                         console.log("Failed to parse the incoming data. Error: ", error);

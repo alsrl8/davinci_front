@@ -1,9 +1,10 @@
 import {User} from "./User";
 
-enum Usertype {
+export enum UserType {
     User,
-    Admin ,
+    Admin,
     Guest,
+    GameInvitation
 }
 
 export type ChatObject = {
@@ -11,12 +12,25 @@ export type ChatObject = {
     user: User,
     message: string,
     time: string,
-    userType: Usertype,
+    userType: UserType,
+}
+
+export type GameInvitationObject = {
+    messageType: number,
+    user: User,
+    message: string,
+    time: string,
+    userType: UserType,
+    roomId: string,
 }
 
 export type Message = {
     user: User,
     message: string,
     time: string,
-    userType: Usertype,
+    userType: UserType,
+    link: {
+        endpoint: string | null;
+        params: object | null;
+    } | null;
 }

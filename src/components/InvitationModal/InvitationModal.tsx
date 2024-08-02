@@ -15,7 +15,7 @@ interface InvitationModalProps {
 
 interface createRoomData {
     roomId: string;
-    ownerEmail: string;
+    roomOwnerEmail: string;
 }
 
 const InvitationModal = (props: InvitationModalProps) => {
@@ -54,14 +54,14 @@ const InvitationModal = (props: InvitationModalProps) => {
         props.setSocket(newSocket);
         props.setRoomInfo({
             roomId: data.roomId,
-            roomOwnerEmail: data.ownerEmail,
+            roomOwnerEmail: data.roomOwnerEmail,
         })
 
         // TODO Invitation을 보내는 주체가 front-end로 되어 있는데 꼭 이렇게 해야 하는지? Game Server에서 Char Server로 요청을 보낼 수는 없는지?
         sendApiRequest(
             {
                 method: "POST",
-                body: {'userEmail': selectedEmail, 'roomId': data.roomId, 'roomOwnerEmail': data.ownerEmail},
+                body: {'userEmail': selectedEmail, 'roomId': data.roomId, 'roomOwnerEmail': data.roomOwnerEmail},
                 params: null,
                 server: "chat",
                 endpoint: "send-invitation"

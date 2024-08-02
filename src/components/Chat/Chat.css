@@ -20,16 +20,22 @@
     margin-bottom: 5px;
 }
 
+/* User */
 .message0 {
 
 }
-
+/* Admin */
 .message1 {
     color: royalblue;
 }
-
+/* Guest */
 .message2 {
     color: gray
+}
+/* GameInvitation */
+.message3 {
+    color: royalblue;
+
 }
 
 
